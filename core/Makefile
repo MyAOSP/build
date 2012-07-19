@@ -1258,11 +1258,20 @@ endif
 
 $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS) $(SELINUX_DEPENDS)
 	@echo "Package OTA: $@"
+ifneq ($(TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT),)
+	$(hide) ./$(TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT) -v \
+	   -p $(HOST_OUT) \
+	   -k $(KEY_CERT_PAIR) \
+	   --no_assert=$(skip_assert) \
+	   $(BUILT_TARGET_FILES_PACKAGE) $@
+else
 	$(hide) ./build/tools/releasetools/ota_from_target_files -v \
 	   -p $(HOST_OUT) \
 	   -k $(KEY_CERT_PAIR) \
 	   --no_assert=$(skip_assert) \
 	   $(BUILT_TARGET_FILES_PACKAGE) $@
+endif
+
 
 .PHONY: otapackage bacon
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
