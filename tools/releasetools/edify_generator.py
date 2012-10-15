@@ -99,6 +99,16 @@ class EdifyGenerator(object):
            ");")
     self.script.append(self._WordWrap(cmd))
 
+  def RunBackup(self, command):
+    self.script.append('package_extract_file("system/bin/backuptool.sh", "/tmp/backuptool.sh");')
+    self.script.append('package_extract_file("system/bin/backuptool.functions", "/tmp/backuptool.functions");')
+    self.script.append('set_perm(0, 0, 0777, "/tmp/backuptool.sh");')
+    self.script.append('set_perm(0, 0, 0644, "/tmp/backuptool.functions");')
+    self.script.append(('run_program("/tmp/backuptool.sh", "%s");' % command))
+    if command == "restore":
+        self.script.append('delete("/system/bin/backuptool.sh");')
+        self.script.append('delete("/system/bin/backuptool.functions");')
+
   def RunConfig(self, command):
     self.script.append('package_extract_file("system/bin/modelid_cfg.sh", "/tmp/modelid_cfg.sh");')
     self.script.append('set_perm(0, 0, 0777, "/tmp/modelid_cfg.sh");')
@@ -145,6 +155,12 @@ class EdifyGenerator(object):
                          (p.fs_type, common.PARTITION_TYPES[p.fs_type],
                           p.device, p.mount_point))
       self.mounts.add(p.mount_point)
+
+  def Unmount(self, mount_point):
+    """Unmount the partition with the given mount_point."""
+    if mount_point in self.mounts:
+        self.mounts.remove(mount_point)
+        self.script.append('unmount("%s");' % (mount_point,))
 
   def UnpackPackageDir(self, src, dst):
     """Unpack a given directory from the OTA package into the given
@@ -212,7 +228,7 @@ class EdifyGenerator(object):
         self.script.append(
             'package_extract_file("%(fn)s", "%(device)s");' % args)
       elif partition_type == "BML":
-	        self.script.append(
+                self.script.append(
             ('assert(package_extract_file("%(fn)s", "/tmp/%(device)s.img"),\n'
              '       write_raw_image("/tmp/%(device)s.img", "%(device)s"),\n'
              '       delete("/tmp/%(device)s.img"));') % args)

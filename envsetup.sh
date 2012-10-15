@@ -59,6 +59,20 @@ function check_product()
         echo "Couldn't locate the top of the tree.  Try setting TOP." >&2
         return
     fi
+
+    if (echo -n $1 | grep -q -e "^baked_") ; then
+       BAKED_BUILD=$(echo -n $1 | sed -e 's/^baked_//g')
+       NAM_VARIANT=$(echo -n $1 | sed -e 's/^baked_//g')
+    elif (echo -n $1 | grep -q -e "htc_") ; then
+       BAKED_BUILD=
+       NAM_VARIANT=$(echo -n $1)
+    else
+       BAKED_BUILD=
+       NAM_VARIANT=
+    fi
+    export BAKED_BUILD
+    export NAM_VARIANT
+
     CALLED_FROM_SETUP=true BUILD_SYSTEM=build/core \
         TARGET_PRODUCT=$1 \
         TARGET_BUILD_VARIANT= \
