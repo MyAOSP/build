@@ -264,7 +264,7 @@ $(APKCERTS_FILE):
 	@echo APK certs list: $@
 	@mkdir -p $(dir $@)
 	@rm -f $@
-	$(hide) $(foreach p,$(PACKAGES),\
+	$(hide) cd $(dir $@) && $(foreach p,$(PACKAGES),\
           $(if $(PACKAGES.$(p).EXTERNAL_KEY),\
 	    echo 'name="$(p).apk" certificate="EXTERNAL" \
 	         private_key=""' >> $@;${\n},\
