@@ -50,9 +50,6 @@ endif
 #$(shell rm -f tag-list.csv)
 #tag-list-first-time := false
 #endif
-#comma := ,
-#empty :=
-#space := $(empty) $(empty)
 #$(shell echo $(lastword $(filter-out config/% out/%,$(MAKEFILE_LIST))),$(LOCAL_MODULE),$(strip $(LOCAL_MODULE_CLASS)),$(subst $(space),$(comma),$(sort $(LOCAL_MODULE_TAGS))) >> tag-list.csv)
 
 LOCAL_UNINSTALLABLE_MODULE := $(strip $(LOCAL_UNINSTALLABLE_MODULE))
@@ -166,11 +163,7 @@ LOCAL_BUILT_MODULE := $(built_module_path)/$(LOCAL_BUILT_MODULE_STEM)
 built_module_path :=
 
 ifneq (true,$(LOCAL_UNINSTALLABLE_MODULE))
-  ifdef LOCAL_MODULE_NAME
-      LOCAL_INSTALLED_MODULE := $(LOCAL_MODULE_PATH)/$(LOCAL_MODULE_NAME)
-  else
-      LOCAL_INSTALLED_MODULE := $(LOCAL_MODULE_PATH)/$(LOCAL_INSTALLED_MODULE_STEM)
-  endif
+  LOCAL_INSTALLED_MODULE := $(LOCAL_MODULE_PATH)/$(LOCAL_INSTALLED_MODULE_STEM)
 endif
 
 # Assemble the list of targets to create PRIVATE_ variables for.

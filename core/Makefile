@@ -1303,16 +1303,16 @@ else
     OTA_FROM_TARGET_SCRIPT := $(TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT)
 endif
 
-ifneq ($(CM_BUILD),)
+ifneq ($(BAKED_BUILD),)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
 else
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
 endif
 
-ifeq ($(TARGET_OTA_ASSERT_DEVICE),)
-    $(INTERNAL_OTA_PACKAGE_TARGET): override_device := auto
+ifeq ($(TARGET_OTA_ASSERT_SKIP),true)
+    $(INTERNAL_OTA_PACKAGE_TARGET): skip_assert := true
 else
-    $(INTERNAL_OTA_PACKAGE_TARGET): override_device := $(TARGET_OTA_ASSERT_DEVICE)
+    $(INTERNAL_OTA_PACKAGE_TARGET): skip_assert := false
 endif
 
 $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
@@ -1321,7 +1321,7 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
 	   -p $(HOST_OUT) \
 	   -k $(KEY_CERT_PAIR) \
 	   --backup=$(backuptool) \
-	   --override_device=$(override_device) \
+	   --no_assert=$(skip_assert) \
 	   $(BUILT_TARGET_FILES_PACKAGE) $@
 
 .PHONY: otapackage bacon
