@@ -130,9 +130,7 @@ function setpaths()
     # and in with the new
     CODE_REVIEWS=
     prebuiltdir=$(getprebuilt)
-    prebuiltextradir=$(getprebuiltextra)
     gccprebuiltdir=$(get_abs_build_var ANDROID_GCC_PREBUILTS)
-    gccprebuiltextradir=$(get_abs_build_var ANDROID_GCC_PREBUILTS_EXTRA)
 
     # The gcc toolchain does not exists for windows/cygwin. In this case, do not reference it.
     export ANDROID_EABI_TOOLCHAIN=
@@ -149,10 +147,8 @@ function setpaths()
             toolchaindir=xxxxxxxxx
             ;;
     esac
-    if [ -d "$gccprebuiltextradir/$toolchaindir" ]; then
-        export ANDROID_EABI_TOOLCHAIN="$gccprebuiltextradir/$toolchaindir"
-    elif [ -d "$gccprebuiltdir/$toolchaindir" ]; then
-        export ANDROID_EABI_TOOLCHAIN="$gccprebuiltdir/$toolchaindir"
+    if [ -d "$gccprebuiltdir/$toolchaindir" ]; then
+        export ANDROID_EABI_TOOLCHAIN=$gccprebuiltdir/$toolchaindir
     fi
 
     unset ARM_EABI_TOOLCHAIN ARM_EABI_TOOLCHAIN_PATH
@@ -170,11 +166,6 @@ function setpaths()
             # No need to set ARM_EABI_TOOLCHAIN for other ARCHs
             ;;
     esac
-    if [ -e "$gccprebuiltextradir/$toolchaindir" ]; then
-        export ARM_EABI_TOOLCHAIN="$gccprebuiltextradir/$toolchaindir"
-    elif [ -d "$gccprebuiltdir/$toolchaindir" ]; then
-        export ARM_EABI_TOOLCHAIN="$gccprebuiltdir/$toolchaindir"
-    fi
 
     export ANDROID_TOOLCHAIN=$ANDROID_EABI_TOOLCHAIN
     export ANDROID_QTOOLS=$T/development/emulator/qtools
@@ -875,7 +866,6 @@ function gdbclient()
    local OUT_SYMBOLS=$(get_abs_build_var TARGET_OUT_UNSTRIPPED)
    local OUT_SO_SYMBOLS=$(get_abs_build_var TARGET_OUT_SHARED_LIBRARIES_UNSTRIPPED)
    local OUT_EXE_SYMBOLS=$(get_abs_build_var TARGET_OUT_EXECUTABLES_UNSTRIPPED)
-   local PREBUILTS_EXTRA=$(get_abs_build_var ANDROID_PREBUILTS_EXTRA)
    local PREBUILTS=$(get_abs_build_var ANDROID_PREBUILTS)
    local ARCH=$(get_build_var TARGET_ARCH)
    local GDB
@@ -999,11 +989,6 @@ esac
 function getprebuilt
 {
     get_abs_build_var ANDROID_PREBUILTS
-}
-
-function getprebuiltextra
-{
-    get_abs_build_var ANDROID_PREBUILTS_EXTRA
 }
 
 function tracedmdump()

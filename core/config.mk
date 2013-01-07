@@ -14,6 +14,11 @@ else
 SHELL := /bin/bash
 endif
 
+# Utility variables.
+empty :=
+space := $(empty) $(empty)
+comma := ,
+
 # Tell python not to spam the source tree with .pyc files.  This
 # only has an effect on python 2.6 and above.
 export PYTHONDONTWRITEBYTECODE := 1
@@ -354,6 +359,18 @@ ifeq ($(HOST_OS),darwin)
 MD5SUM:=md5 -q
 else
 MD5SUM:=md5sum
+endif
+
+# In-place sed is done different in linux than OS X
+ifeq ($(HOST_OS),darwin)
+GSED:=$(shell which gsed)
+ifeq ($(GSED),)
+SED_INPLACE:=sed -i ''
+else
+SED_INPLACE:=gsed -i
+endif
+else
+SED_INPLACE:=sed -i
 endif
 
 APICHECK_CLASSPATH := $(HOST_JDK_TOOLS_JAR)

@@ -32,9 +32,7 @@ endif
 
 ANDROID_BUILD_PATHS := $(ABP)
 ANDROID_PREBUILTS := prebuilt/$(HOST_PREBUILT_TAG)
-ANDROID_PREBUILTS_EXTRA := prebuilt/$(HOST_PREBUILT_EXTRA_TAG)
 ANDROID_GCC_PREBUILTS := prebuilts/gcc/$(HOST_PREBUILT_TAG)
-ANDROID_GCC_PREBUILTS_EXTRA := prebuilts/gcc/$(HOST_PREBUILT_EXTRA_TAG)
 
 # The "dumpvar" stuff lets you say something like
 #
