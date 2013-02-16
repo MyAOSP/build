@@ -21,25 +21,36 @@
 
 PRODUCT_PACKAGES := \
     libfwdlockengine \
+    OpenWnn \
+    PinyinIME \
+    libWnnEngDic \
+    libWnnJpnDic \
+    libwnndict \
     VideoEditor \
     WAPPushManager
 
 PRODUCT_PACKAGES += \
-    libvideoeditor_jni \
-    libvideoeditor_core \
-    libvideoeditor_osal \
-    libvideoeditor_videofilters \
-    libvideoeditorplayer
+    Galaxy4 \
+    HoloSpiralWallpaper \
+    LiveWallpapers \
+    LiveWallpapersPicker \
+    MagicSmokeWallpapers \
+    NoiseField \
+    PhaseBeam \
+    VisualizationWallpapers \
+    PhotoTable
 
 # Additional settings used in all AOSP builds
 PRODUCT_PROPERTY_OVERRIDES := \
-    ro.com.android.dateformat=MM-dd-yyyy
+    ro.com.android.dateformat=MM-dd-yyyy \
+    ro.config.ringtone=Ring_Synth_04.ogg \
+    ro.config.notification_sound=pixiedust.ogg
 
 # Put en_US first in the list, so make it default.
 PRODUCT_LOCALES := en_US
 
 # Get some sounds
-$(call inherit-product-if-exists, frameworks/base/data/sounds/NewAudio.mk)
+$(call inherit-product-if-exists, frameworks/base/data/sounds/AllAudio.mk)
 
 # Get the TTS language packs
 $(call inherit-product-if-exists, external/svox/pico/lang/all_pico_languages.mk)
