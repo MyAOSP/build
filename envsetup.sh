@@ -25,7 +25,6 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
 - mkap:     Builds the module(s) using mka and pushes them to the device.
 - cmka:     Cleans and builds using mka.
 - reposync: Parallel repo sync using ionice and SCHED_BATCH.
-- repopick: Utility to fetch changes from Gerrit.
 - installboot: Installs a boot.img to the connected device.
 - installrecovery: Installs a recovery.img to the connected device.
 
@@ -572,17 +571,6 @@ function lunch()
 
     local product=$(echo -n $selection | sed -e "s/-.*$//")
     check_product $product
-    if [ $? -ne 0 ]
-    then
-        # if we can't find a product, try to grab it off the CM github
-        T=$(gettop)
-        pushd $T > /dev/null
-        build/tools/roomservice.py $product
-        popd > /dev/null
-        check_product $product
-    else
-        build/tools/roomservice.py $product true
-    fi
     if [ $? -ne 0 ]
     then
         echo
@@ -2047,11 +2035,6 @@ alias mmmp='dopush mmm'
 alias mkap='dopush mka'
 alias cmkap='dopush cmka'
 
-function repopick() {
-    T=$(gettop)
-    $T/build/tools/repopick.py $@
-}
-
 function fixup_common_out_dir() {
     common_out_dir=$(get_build_var OUT_DIR)/target/common
     target_device=$(get_build_var TARGET_DEVICE)
@@ -2117,18 +2100,5 @@ do
     . $f
 done
 unset f
-
-# Add completions
-check_bash_version && {
-    dirs="sdk/bash_completion vendor/cm/bash_completion"
-    for dir in $dirs; do
-    if [ -d ${dir} ]; then
-        for f in `/bin/ls ${dir}/[a-z]*.bash 2> /dev/null`; do
-            echo "including $f"
-            . $f
-        done
-    fi
-    done
-}
 
 export ANDROID_BUILD_TOP=$(gettop)
