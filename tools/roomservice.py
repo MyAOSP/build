@@ -175,6 +175,42 @@ def add_to_manifest(repositories, fallback_branch = None):
 
         print('Adding dependency: %s -> %s' % (repo_name, repo_target))
         project = ElementTree.Element("project", attrib = { "path": repo_target,
+            "remote": "github", "name": "%s" % "TeamBAKED/" + repo_name })
+
+        if 'branch' in repository:
+            project.set('revision',repository['branch'])
+        elif fallback_branch:
+            print("Using fallback branch %s for %s" % (fallback_branch, repo_name))
+            project.set('revision', fallback_branch)
+        else:
+            print("Using default branch for %s" % repo_name)
+
+        lm.append(project)
+
+    indent(lm, 0)
+    raw_xml = ElementTree.tostring(lm).decode()
+    raw_xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + raw_xml
+
+    f = open('.repo/local_manifests/roomservice.xml', 'w')
+    f.write(raw_xml)
+    f.close()
+
+def add_as_dependency(repositories, fallback_branch = None):
+    try:
+        lm = ElementTree.parse(".repo/local_manifests/roomservice.xml")
+        lm = lm.getroot()
+    except:
+        lm = ElementTree.Element("manifest")
+
+    for repository in repositories:
+        repo_name = repository['repository']
+        repo_target = repository['target_path']
+        if exists_in_tree(lm, repo_name):
+            print('%s already exists' % (repo_name))
+            continue
+
+        print('Adding dependency: %s -> %s' % (repo_name, repo_target))
+        project = ElementTree.Element("project", attrib = { "path": repo_target,
             "remote": "github", "name": "%s" % repo_name })
 
         if 'branch' in repository:
@@ -214,7 +250,7 @@ def fetch_dependencies(repo_path, fallback_branch = None):
 
         if len(fetch_list) > 0:
             print('Adding dependencies to manifest')
-            add_to_manifest(fetch_list, fallback_branch)
+            add_as_dependency(fetch_list, fallback_branch)
     else:
         print('Dependencies file not found, bailing out.')
 
