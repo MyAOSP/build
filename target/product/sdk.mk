@@ -25,7 +25,7 @@ PRODUCT_PACKAGES := \
 	FusedLocation \
 	Gallery2 \
 	Keyguard \
-	Apollo \
+	Music \
 	Mms \
 	OpenWnn \
 	PrintSpooler \
@@ -34,7 +34,7 @@ PRODUCT_PACKAGES := \
 	libwnndict \
 	TeleService \
 	PinyinIME \
-	libjni_pinyinime \
+	Protips \
 	SoftKeyboard \
 	SystemUI \
 	Trebuchet \
@@ -52,6 +52,7 @@ PRODUCT_PACKAGES := \
 	ApiDemos \
 	GestureBuilder \
 	CubeLiveWallpapers \
+	QuickSearchBox \
 	WidgetPreview \
 	librs_jni \
 	ConnectivityTest \
@@ -60,7 +61,9 @@ PRODUCT_PACKAGES := \
 	Calendar \
 	SmokeTest \
 	SmokeTestApp \
-	rild
+	rild \
+	LegacyCamera \
+	Dialer
 
 # Define the host tools and libs that are parts of the SDK.
 -include sdk/build/product_sdk.mk
