@@ -410,6 +410,10 @@ def MakeRecoveryPatch(input_tmp, output_zip, recovery_img, boot_img):
   recovery_type, recovery_device = common.GetTypeAndDevice("/recovery", OPTIONS.info_dict)
 
   sh = """#!/system/bin/sh
+if [ -f /system/etc/recovery-transform.sh ]; then
+  exec sh /system/etc/recovery-transform.sh %(recovery_size)d %(recovery_sha1)s %(boot_size)d %(boot_sha1)s
+fi
+
 if ! applypatch -c %(recovery_type)s:%(recovery_device)s:%(recovery_size)d:%(recovery_sha1)s; then
   log -t recovery "Installing new recovery image"
   applypatch %(bonus_args)s %(boot_type)s:%(boot_device)s:%(boot_size)d:%(boot_sha1)s %(recovery_type)s:%(recovery_device)s %(recovery_sha1)s %(recovery_size)d %(boot_sha1)s:/system/recovery-from-boot.p
@@ -740,7 +744,9 @@ def WriteIncrementalOTAPackage(target_zip, source_zip, output_zip):
         OPTIONS.source_info_dict)
     target_recovery = common.GetBootableImage(
         "/tmp/recovery.img", "recovery.img", OPTIONS.target_tmp, "RECOVERY")
-  updating_recovery = (source_recovery.data != target_recovery.data)
+    updating_recovery = (source_recovery.data != target_recovery.data)
+  else:
+    updating_recovery = False
 
   # Here's how we divide up the progress bar:
   #  0.1 for verifying the start state (PatchCheck calls)
@@ -1046,7 +1052,8 @@ def main(argv):
                                               "backup=",
                                               "override_device=",
                                               "override_prop=",
-                                              "no_separate_recovery="],
+                                              "no_separate_recovery=",
+                                              ],
                              extra_option_handler=option_handler)
 
   if len(args) != 2:
