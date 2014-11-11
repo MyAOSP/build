@@ -24,7 +24,6 @@ PRODUCT_PACKAGES := \
 	Dialer \
 	EmulatorSmokeTests \
 	Fallback \
-	Gallery \
 	GestureBuilder \
 	librs_jni \
 	LiveWallpapersPicker \
