@@ -564,16 +564,18 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     script.Unmount("/system")
 
   system_progress = 0.75
-  script.Print("             ___                       ")
-  script.Print("            /   \                      ")
-  script.Print("            \___/                      ")
-  script.Print(" ____   ____ ___ ___  __  ____  _____  ")
-  script.Print("|    \_/    |   |   \|  |/    \/     \ ")
-  script.Print("|           |   |       |      |   __/ ")
-  script.Print("|   |   |   |   |       |   0  |__   \ ")
-  script.Print("|   |   |   |   |       |      /     | ")
-  script.Print("|___^___^___^___^__|\___|\____/\_____/ ")
-  script.Print("                                       ")
+  script.Print("                  LOADING                          ")
+  script.Print("                                                   ")
+  script.Print("             ___            ______   ______        ")
+  script.Print("            /   \          /      \ /      \       ")
+  script.Print(" ____   ____\___/____  ___/        /        \      ")
+  script.Print("/    \_/    \___/    \|   |        |    \___/      ")
+  script.Print("|           |   |         |    0   |        \      ")
+  script.Print("|   |   |   |   |         |        |\__/    |      ")
+  script.Print("|   |   |   |   |         |        /        /      ")
+  script.Print("\___^___^___^___^___|\____/\______/\_______/       ")
+  script.Print("                                                   ")
+  script.Print("                                                   ")
 
   if OPTIONS.wipe_user_data:
     system_progress -= 0.1
