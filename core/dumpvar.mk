@@ -128,6 +128,7 @@ ifdef    USE_HOST_4_8
 $(info   USE_HOST_4_8=$(USE_HOST_4_8))
 else
 $(info   USE_HOST_4_8=false)
+$(info   TARGET_KERNEL_TOOLCHAIN=4.9)
 endif
 $(info   HOST_ARCH=$(HOST_ARCH))
 $(info   HOST_OS=$(HOST_OS))
