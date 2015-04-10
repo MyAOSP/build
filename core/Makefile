@@ -1526,7 +1526,7 @@ ifneq ($(PRODUCT_PREBUILT_WEBVIEWCHROMIUM),yes)
 	@echo -e ${CL_GRN}"Running Chromium prebuilt setup script..."${CL_RST}
 	$(hide) . $(TOPDIR)vendor/minos/utils/chromium_prebuilt.sh $(TOP)
 endif
-
+endif
 endif    # recovery_fstab is defined
 endif    # TARGET_NO_KERNEL != true
 endif    # TARGET_DEVICE != generic*
@@ -1829,5 +1829,4 @@ endif
 # we need the addon rules defined.
 ifneq ($(sdk_repo_goal),)
 include $(TOPDIR)development/build/tools/sdk_repo.mk
-endif
 endif
