@@ -77,6 +77,58 @@ $(info   TARGET_CPU_VARIANT=$(TARGET_CPU_VARIANT))
 $(info   TARGET_2ND_ARCH=$(TARGET_2ND_ARCH))
 $(info   TARGET_2ND_ARCH_VARIANT=$(TARGET_2ND_ARCH_VARIANT))
 $(info   TARGET_2ND_CPU_VARIANT=$(TARGET_2ND_CPU_VARIANT))
+$(info   TARGET_GCC_VERSION=$(TARGET_GCC_VERSION))
+$(info   TARGET_NDK_GCC_VERSION=$(TARGET_NDK_GCC_VERSION))
+ifdef    USE_O3_OPTIMIZATIONS
+$(info   USE_O3_OPTIMIZATIONS=$(USE_O3_OPTIMIZATIONS))
+else
+$(info   USE_O3_OPTIMIZATIONS=false)
+endif
+ifdef    TARGET_USE_PIPE
+$(info   TARGET_USE_PIPE=$(TARGET_USE_PIPE))
+else
+$(info   TARGET_USE_PIPE=false)
+endif
+ifdef    STRICT_ALIASING
+$(info   STRICT_ALIASING=$(STRICT_ALIASING))
+else
+$(info   STRICT_ALIASING=false)
+endif
+ifdef    KRAIT_TUNINGS
+$(info   KRAIT_TUNINGS=$(KRAIT_TUNINGS))
+else
+$(info   KRAIT_TUNINGS=fasle)
+endif
+ifdef    FFAST_MATH
+$(info   FFAST_MATH=$(FFAST_MATH))
+else
+$(info   FFAST_MATH=false)
+endif
+ifdef    ENABLE_GCCONLY
+$(info   ENABLE_GCCONLY=$(ENABLE_GCCONLY))
+else
+$(info   ENABLE_GCCONLY=false)
+endif
+ifdef    FLOOP_NEST_OPTIMIZE
+$(info   FLOOP_NEST_OPTIMIZE=$(FLOOP_NEST_OPTIMIZE))
+else
+$(info   FLOOP_NEST_OPTIMIZE=false)
+endif
+ifdef    GRAPHITE_OPTS
+$(info   GRAPHITE_OPTS=$(GRAPHITE_OPTS))
+else
+$(info   GRAPHITE_OPTS=false)
+endif
+ifdef    ENABLE_PTHREAD
+$(info   ENABLE_PTHREAD=$(ENABLE_PTHREAD))
+else
+$(info   ENABLE_PTHREAD=false)
+endif
+ifdef    USE_HOST_4_8
+$(info   USE_HOST_4_8=$(USE_HOST_4_8))
+else
+$(info   USE_HOST_4_8=false)
+endif
 $(info   HOST_ARCH=$(HOST_ARCH))
 $(info   HOST_OS=$(HOST_OS))
 $(info   HOST_OS_EXTRA=$(HOST_OS_EXTRA))
