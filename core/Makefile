@@ -723,6 +723,12 @@ INTERNAL_USERIMAGES_EXT_VARIANT := ext4
 endif
 endif
 endif
+ifeq ($(TARGET_USERIMAGES_USE_F2FS),true)
+INTERNAL_USERIMAGES_USE_F2FS := true
+ifeq ($(INTERNAL_USERIMAGES_EXT_VARIANT),)
+INTERNAL_USERIMAGES_EXT_VARIANT := f2fs
+endif
+endif
 
 # These options tell the recovery updater/installer how to mount the partitions writebale.
 # <fstype>=<fstype_opts>[|<fstype_opts>]...
@@ -739,15 +745,17 @@ ifneq ($(TARGET_TRANSPARENT_COMPRESSION_METHOD),)
   INTERNAL_TRANSPARENT_COMPRESSION_METHOD := $(TARGET_TRANSPARENT_COMPRESSION_METHOD)
 endif
 
+INTERNAL_USERIMAGES_DEPS :=
 ifeq ($(INTERNAL_USERIMAGES_USE_EXT),true)
-INTERNAL_USERIMAGES_DEPS := $(SIMG2IMG)
 INTERNAL_USERIMAGES_DEPS += $(MKEXTUSERIMG) $(MAKE_EXT4FS) $(E2FSCK)
-ifeq ($(TARGET_USERIMAGES_USE_F2FS),true)
+endif
+ifeq ($(INTERNAL_USERIMAGES_USE_F2FS),true)
 INTERNAL_USERIMAGES_DEPS += $(MKF2FSUSERIMG) $(MAKE_F2FS)
 endif
-else
+ifeq ($(INTERNAL_USERIMAGES_DEPS),)
 INTERNAL_USERIMAGES_DEPS := $(MKYAFFS2)
 endif
+INTERNAL_USERIMAGES_DEPS += $(SIMG2IMG)
 
 INTERNAL_USERIMAGES_BINARY_PATHS := $(sort $(dir $(INTERNAL_USERIMAGES_DEPS)))
 
@@ -762,6 +770,7 @@ INTERNAL_USERIMAGES_DEPS += $(SELINUX_FC)
 # $(2): additional "key=value" pairs to append to the dictionary file.
 define generate-userimage-prop-dictionary
 $(if $(INTERNAL_USERIMAGES_EXT_VARIANT),$(hide) echo "fs_type=$(INTERNAL_USERIMAGES_EXT_VARIANT)" >> $(1))
+$(if $(BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE),$(hide) echo "system_fs_type=$(BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE)" >> $(1))
 $(if $(BOARD_SYSTEMIMAGE_PARTITION_SIZE),$(hide) echo "system_size=$(BOARD_SYSTEMIMAGE_PARTITION_SIZE)" >> $(1))
 $(if $(BOARD_SYSTEMIMAGE_JOURNAL_SIZE),$(hide) echo "system_journal_size=$(BOARD_SYSTEMIMAGE_JOURNAL_SIZE)" >> $(1))
 $(if $(BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE),$(hide) echo "userdata_fs_type=$(BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE)" >> $(1))
@@ -806,6 +815,9 @@ recovery_resources_common := $(call project-path-for,recovery)/res
 
 # Set recovery_density to the density bucket of the device.
 recovery_density := unknown
+ifneq (,$(TARGET_RECOVERY_DENSITY))
+recovery_density := $(filter %dpi,$(TARGET_RECOVERY_DENSITY))
+else
 ifneq (,$(PRODUCT_AAPT_PREF_CONFIG))
 ifeq ($(PRODUCT_AAPT_PREF_CONFIG),560dpi)
 recovery_density := xxxhdpi
@@ -816,6 +828,7 @@ endif
 else
 # Otherwise, use the default medium density.
 recovery_densities := mdpi
+endif
 endif
 
 ifneq (,$(wildcard $(recovery_resources_common)-$(recovery_density)))
@@ -1546,6 +1559,9 @@ endif
 	$(hide) $(foreach t,$(INSTALLED_RADIOIMAGE_TARGET),\
 	            mkdir -p $(zip_root)/RADIO; \
 	            $(ACP) $(t) $(zip_root)/RADIO/$(notdir $(t));)
+	$(hide) $(foreach fi,$(PRODUCT_FACTORYIMAGE_FILES),\
+		mkdir -p $(zip_root)/FACTORY; \
+		$(ACP) $(fi) $(zip_root)/FACTORY/$(notdir $(fi));)
 	@# Contents of the system image
 	$(hide) $(call package_files-copy-root, \
 		$(SYSTEMIMAGE_SOURCE_DIR),$(zip_root)/SYSTEM)
@@ -1606,6 +1622,9 @@ ifneq ($(OEM_THUMBPRINT_PROPERTIES),)
 endif
 ifdef BUILD_NO
 	$(hide) echo "build_number=$(BUILD_NO)" >> $(zip_root)/META/misc_info.txt
+endif
+ifdef TARGET_RELEASETOOL_FACTORY_FROM_TARGET_SCRIPT
+	$(hide) echo "factory_from_target_script=$(TARGET_RELEASETOOL_FACTORY_FROM_TARGET_SCRIPT)" >> $(zip_root)/META/misc_info.txt
 endif
 	$(call generate-userimage-prop-dictionary, $(zip_root)/META/misc_info.txt)
 ifeq ($(TARGET_RELEASETOOL_MAKE_RECOVERY_PATCH_SCRIPT),)
@@ -1690,6 +1709,7 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
 	$(hide) MKBOOTIMG=$(MKBOOTIMG) \
 	   $(OTA_FROM_TARGET_SCRIPT) -v \
 	   --block \
+	   $(if $(WITH_LZMA_OTA), -z) \
 	   -p $(HOST_OUT) \
 	   -k $(KEY_CERT_PAIR) \
 	   --backup=$(backuptool) \
